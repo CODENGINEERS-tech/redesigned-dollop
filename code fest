@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <style>
+    /* General Styles */
+    body {
+      font-family:Georgia;
+      background-color: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    section {
+      margin: 40px 0;
+      padding: 20px;
+      border: 2px solid #ccc;
+      background-color: #fff;
+      border-radius: 10px;
+    }
+
+    h2 {
+      font-size: 24px;
+      color: #333;
+    }
+
+    /* Button Styles */
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Calculator Styles */
+    #calc-display {
+      padding: 10px;
+      font-size: 24px;
+      width: 250px;
+      margin: 20px;
+      text-align: left;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+      justify-content: center;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .buttons button {
+      font-size: 20px;
+      padding: 20px;
+    }
+
+    /* Ping Pong Game Styles */
+    #ping-pong-canvas {
+      border: 2px solid #000;
+      display: block;
+      margin: 0 auto;
+    }
+
+    #ping-pong-info {
+      margin-top: 10px;
+    }
+
+    /* Clicker Game Styles */
+    #clicker-dot {
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      border-radius: 70%;
+      position: absolute;
+      cursor: pointer;
+    }
+
+    #clicker-info {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Translator Section -->
+  <section id="translator">
+    <h2>Translator</h2>
+    <input type="text" id="translator-input" placeholder="Enter text to translate">
+    <button onclick="translateText()">Translate</button>
+    <p id="translated-text"></p>
+  </section>
+
+  <!-- Calculator Section -->
+  <section id="calculator">
+    <h2>Calculator</h2>
+    <input type="text" id="calc-display" disabled>
+    <div class="buttons">
+      <button onclick="appendToDisplay('1')">1</button>
+      <button onclick="appendToDisplay('2')">2</button>
+      <button onclick="appendToDisplay('3')">3</button>
+      <button onclick="appendToDisplay('+')">+</button>
+      <button onclick="appendToDisplay('4')">4</button>
+      <button onclick="appendToDisplay('5')">5</button>
+      <button onclick="appendToDisplay('6')">6</button>
+      <button onclick="appendToDisplay('-')">-</button>
+      <button onclick="appendToDisplay('7')">7</button>
+      <button onclick="appendToDisplay('8')">8</button>
+      <button onclick="appendToDisplay('9')">9</button>
+      <button onclick="appendToDisplay('*')">*</button>
+      <button onclick="appendToDisplay('0')">0</button>
+      <button onclick="appendToDisplay('.')">.</button>
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="calculate()">=</button>
+    </div>
+  </section>
+</body>
+</html>
