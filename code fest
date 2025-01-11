@@ -8,7 +8,7 @@
     /* General Styles */
     body {
       font-family:Georgia;
-      background-color: #f0f0f0;
+      background-color: lightcyan;
       padding: 20px;
       text-align: center;
     }
@@ -17,13 +17,13 @@
       margin: 40px 0;
       padding: 20px;
       border: 2px solid #ccc;
-      background-color: #fff;
+      background-color: black;
       border-radius: 10px;
     }
 
     h2 {
       font-size: 24px;
-      color: #333;
+      color: white;
     }
 
     /* Button Styles */
@@ -121,6 +121,7 @@
       <button onclick="appendToDisplay('0')">0</button>
       <button onclick="appendToDisplay('.')">.</button>
       <button onclick="clearDisplay()">C</button>
+      <button onclick="appendToDisplay('/')">/</button>
       <button onclick="calculate()">=</button>
     </div>
   </section>
