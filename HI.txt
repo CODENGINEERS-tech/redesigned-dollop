@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codefest Website</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Georgia;
+      background-color: LightCyan;
+      padding: 20px;
+      text-align: center;
+    }
+
+    section {
+      margin: 40px 0;
+      padding: 25px;
+      border: 5px solid #ccc;
+      background-color: black;
+      border-radius: 15px;
+    }
+
+    h1 {
+      font-size: 30px;
+      color: WhiteSmoke;
+    }
+
+    /* Button Styles */
+    button {
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Calculator Styles */
+    #calc-display {
+      padding: 10px;
+      font-size: 24px;
+      width: 250px;
+      margin: 20px;
+      text-align: left;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+      justify-content: center;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .buttons button {
+      font-size: 20px;
+      padding: 20px;
+    }
+
+    /* Ping Pong Game Styles */
+    #ping-pong-canvas {
+      border: 2px solid #000;
+      display: block;
+      margin: 0 auto;
+    }
+
+    #ping-pong-info {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Translator Section -->
+  <section id="translator">
+    <h1>Translator</h1>
+    <input type="text" id="translator-input" placeholder="Enter text to translate">
+    <button onclick="translateText()">Translate</button>
+    <p id="translated-text"></p>
+  </section>
+
+  <!-- Calculator Section -->
+  <section id="calculator">
+    <h1>Calculator</h1>
+    <input type="text" id="calc-display" enabled>
+    <div class="buttons">
+      <button onclick="appendToDisplay('7')">7</button>
+      <button onclick="appendToDisplay('8')">8</button>
+      <button onclick="appendToDisplay('9')">9</button>
+      <button onclick="appendToDisplay('x')">x</button>
+      <button onclick="appendToDisplay('4')">4</button>
+      <button onclick="appendToDisplay('5')">5</button>
+      <button onclick="appendToDisplay('6')">6</button>
+      <button onclick="appendToDisplay('-')">-</button>
+      <button onclick="appendToDisplay('1')">1</button>
+      <button onclick="appendToDisplay('2')">2</button>
+      <button onclick="appendToDisplay('3')">3</button>
+      <button onclick="appendToDisplay('+')">+</button>
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="appendToDisplay('0')">0</button>
+      <button onclick="appendToDisplay('.')">.</button>
+      <button onclick="calculate()">=</button>
+    </div>
+  </section>
+
+  <!-- Ping Pong Game Section -->
+  <section id="ping-pong-game">
+    <h1>Ping Pong Game</h1>
+    <canvas id="gameCanvas"></canvas>
+    <div id="score">Score: 0 | High Score: 0</div>
+    <div id="timer">Time: 30s</div>
+    <div id="game-over">
+      <h1>Game Over!</h1>
+      <button onclick="restartGame()">Restart</button>
+    </div>
+  </section>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreDisplay = document.getElementById("score");
+    const timerDisplay = document.getElementById("timer");
+    const gameOverDisplay = document.getElementById("game-over");
+
+    canvas.width = window.innerWidth * 0.8; // Adjust canvas size
+    canvas.height = 400;
+
+    // Game variables
+    let paddle = {
+      x: canvas.width / 2 - 50,
+      y: canvas.height - 30,
+      width: 100,
+      height: 10,
+      dx: 8
+    };
+
+    let ball = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      radius: 10,
+      dx: 4,
+      dy: -4
+    };
+
+    let score = 0;
+    let highScore = 0;
+    let startTime = Date.now();
+    let timer = 30;
+    let gameRunning = true;
+
+    // Event listeners for paddle movement
+    let keys = {};
+    window.addEventListener("keydown", (e) => (keys[e.key] = true));
+    window.addEventListener("keyup", (e) => (keys[e.key] = false));
+
+    function drawPaddle() {
+      ctx.fillStyle = "white";
+      ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+    }
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "cyan";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function updatePaddle() {
+      if (keys["ArrowLeft"] && paddle.x > 0) {
+        paddle.x -= paddle.dx;
+      }
+      if (keys["ArrowRight"] && paddle.x < canvas.width - paddle.width) {
+        paddle.x += paddle.dx;
+      }
+    }
+
+    function updateBall() {
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      // Ball collision with walls
+      if (ball.x - ball.radius <= 0 || ball.x + ball.radius >= canvas.width) {
+        ball.dx *= -1;
+      }
+      if (ball.y - ball.radius <= 0) {
+        ball.dy *= -1;
+      }
+
+      // Ball collision with paddle
+      if (
+        ball.y + ball.radius >= paddle.y &&
+        ball.x >= paddle.x &&
+        ball.x <= paddle.x + paddle.width
+      ) {
+        ball.dy *= -1;
+        score++;
+      }
+
+      // Ball misses paddle
+      if (ball.y + ball.radius > canvas.height) {
+        gameRunning = false;
+      }
+    }
+
+    function drawScore() {
+      scoreDisplay.textContent = `Score: ${score} | High Score: ${highScore}`;
+    }
+
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      timer = Math.max(0, 30 - elapsed);
+      timerDisplay.textContent = `Time: ${timer}s`;
+      if (timer === 0) {
+        gameRunning = false;
+      }
+    }
+
+    function restartGame() {
+      score = 0;
+      startTime = Date.now();
+      timer = 30;
+      ball.x = canvas.width / 2;
+      ball.y = canvas.height / 2;
+      ball.dx = 4;
+      ball.dy = -4;
+      gameRunning = true;
+      gameOverDisplay.style.display = "none";
+      requestAnimationFrame(gameLoop);
+    }
+
+    function gameLoop() {
+      if (!gameRunning) {
+        gameOverDisplay.style.display = "block";
+        highScore = Math.max(highScore, score);
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      drawPaddle();
+      drawBall();
+      drawScore();
+      updatePaddle();
+      updateBall();
+      updateTimer();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+  <div>
+  <h1>About Us</h1>
+      <h2>Armaan</h2>
+       <p>Armaan Is A Person Who Is Advanced At Coding Knowing Languages Such As Basic Java Script (JS),Cascading Style Sheets (CSS) Completely And Is Able To Code Html At The Same Level.</p>
+      <h2>Ayaan</h2>
+      <p>Ayaan Is A Team Member Who Has Helped The Team Impactfully By Using His Advanced Html Skills And Basic Cascading Style Sheets (CSS) Skills To Debug And Improvise The Page.</p>
+      <h2>Sriram</h2>
+      <p>Sriram Is A Member Of The Team Who Has Collaborated To Create The About Us And Credits Page For This Website He Has Showcased His Moderate Html Skills.</p>
+      <h2>Vedant</h2>
+      <p>He Is Member Of This Team That Has Helped Supply The Team Members With Their Needs And Has Used His Creativity Skills To Create Ideas.</p>
+          <h1>Credits</h1>
+          <h3>Gemini</h3>
+          <h3>Chat GPT</h3>
+              <h3>https://htmlcolorcodes.com/</h3>
+</div>
+</body>
+</html>
